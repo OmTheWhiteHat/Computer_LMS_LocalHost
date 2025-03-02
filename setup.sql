@@ -16,6 +16,14 @@ CREATE TABLE labs (
     database_name VARCHAR(100) UNIQUE NOT NULL
 );
 
+CREATE TABLE system_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    ip_address VARCHAR(50),
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- Example lab databases (lab_A, lab_B, lab_C)
 CREATE DATABASE lab_A;

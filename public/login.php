@@ -31,6 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $row = $result->fetch_assoc();
             if (password_verify($password, $row['password_hash'])) {
                 $_SESSION['username'] = $username;
+                
+                // ✅ Store login logs in system_log table
+                $ip_address = $_SERVER['REMOTE_ADDR'];
+                $timestamp = date('Y-m-d H:i:s');
+                $log_query = "INSERT INTO system_logs (username, action, ip_address, timestamp) VALUES (?, 'Login', ?, ?)";
+                $log_stmt = $conn->prepare($log_query);
+                $log_stmt->bind_param("sss", $username, $ip_address, $timestamp);
+                $log_stmt->execute();
+
                 header("Location: ../admin/dashboard.php");
                 exit();
             } else {
@@ -121,18 +130,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <br>
     <a href="../index.html">Landing Page</a>
 </div>
+
 <script>
-        function togglePassword(id) {
-            var input = document.getElementById(id);
-            var icon = document.getElementById(id + "-icon");
-            if (input.type === "password") {
-                input.type = "text";
-                icon.textContent = "👁️";
-            } else {
-                input.type = "password";
-                icon.textContent = "👁️‍🗨️";
-            }
+    function togglePassword(id) {
+        var input = document.getElementById(id);
+        var icon = document.getElementById(id + "-icon");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = "👁️";
+        } else {
+            input.type = "password";
+            icon.textContent = "👁️‍🗨️";
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
