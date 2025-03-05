@@ -6,9 +6,9 @@ if (!isset($_SESSION['username']) || !isset($_GET['lab'])) {
 }
 include '../include/db.php';
 $lab = $_GET['lab'];
-$conn->select_db($lab); // ✅ Ensure the correct database is selected
+$conn->select_db($lab);
 
-// ✅ Add Issue with Device Type
+// ✅ Handle Add & Resolve Issue Requests
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['add_issue'])) {
         $description = $conn->real_escape_string($_POST['description']);
@@ -16,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query = "INSERT INTO `{$lab}_issues` (device_type, description, status) VALUES ('$device_type', '$description', 'Pending')";
         $conn->query($query);
     } elseif (isset($_POST['resolve_issue'])) {
-        $issue_id = $_POST['issue_id'];
+        $issue_id = intval($_POST['issue_id']);
         $query = "UPDATE `{$lab}_issues` SET status='Resolved' WHERE id=$issue_id";
         $conn->query($query);
     }
 }
 
-// ✅ Fetch Active & Resolved Issues
+// ✅ Fetch Issues
 $active_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Pending'");
 $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Resolved'");
 ?>
@@ -148,6 +148,22 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
             }
         }
     </style>
+    <script>
+function liveSearch() {
+    let searchQuery = document.getElementById("search").value;
+    let lab = "<?php echo $lab; ?>";
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "search_issues.php?query=" + searchQuery + "&lab=" + lab, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById("issues-table-body").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+</script>
+
 </head>
 <body>
 
@@ -187,7 +203,7 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="issues-table-body">
                 <?php while ($issue = $active_issues->fetch_assoc()) { ?>
                 <tr>
                     <td><?php echo $issue['id']; ?></td>
@@ -218,7 +234,7 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="issues-table-body1">
                 <?php while ($issue = $resolved_issues->fetch_assoc()) { ?>
                 <tr>
                     <td><?php echo $issue['id']; ?></td>

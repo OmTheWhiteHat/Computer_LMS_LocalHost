@@ -38,6 +38,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS `{$lab}_systems` (
     FOREIGN KEY (monitor_id) REFERENCES `{$lab}_monitors`(id) ON DELETE CASCADE
 )");
 
+// Helper function to insert or get existing ID
 function getOrInsertID($conn, $table, $column, $value) {
     $stmt = $conn->prepare("SELECT id FROM `{$table}` WHERE {$column} = ?");
     $stmt->bind_param("s", $value);
@@ -79,13 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param("iiisssi", $cpu_id, $ups_id, $monitor_id, $internet, $issue, $description, $system_id);
         $stmt->execute();
     }
-
-    if (isset($_POST['delete_system'])) {
-        $system_id = $_POST['system_id'];
-        $stmt = $conn->prepare("DELETE FROM `{$lab}_systems` WHERE id=?");
-        $stmt->bind_param("i", $system_id);
-        $stmt->execute();
-    }
 }
 
 $systems = $conn->query("SELECT s.id, c.cpu_id, u.ups_id, m.monitor_id, s.internet, s.issue, s.description
@@ -93,7 +87,13 @@ FROM `{$lab}_systems` s
 JOIN `{$lab}_cpus` c ON s.cpu_id = c.id
 JOIN `{$lab}_upss` u ON s.ups_id = u.id
 JOIN `{$lab}_monitors` m ON s.monitor_id = m.id");
+
+$systems_list = [];
+while ($row = $systems->fetch_assoc()) {
+    $systems_list[] = $row;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -102,41 +102,43 @@ JOIN `{$lab}_monitors` m ON s.monitor_id = m.id");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Systems - <?php echo htmlspecialchars($lab); ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container mt-4">
-        <!-- Add System Form -->
         <h3 class="text-center mb-4">Add New System</h3>
+        <input type="text" id="search" class="form-control mb-3" placeholder="Search for CPU, UPS, Monitor, Issue...">
+        
         <form method="POST" class="needs-validation" novalidate>
             <div class="row">
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="cpu_id">CPU ID</label>
                     <input type="text" class="form-control" name="cpu_id" placeholder="Enter CPU ID" required>
                 </div>
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="ups_id">UPS ID</label>
                     <input type="text" class="form-control" name="ups_id" placeholder="Enter UPS ID" required>
                 </div>
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="monitor_id">Monitor ID</label>
                     <input type="text" class="form-control" name="monitor_id" placeholder="Enter Monitor ID" required>
                 </div>
             </div>
-
             <div class="row mt-3">
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="internet">Internet Connectivity</label>
                     <select name="internet" class="form-select">
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                     </select>
                 </div>
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="issue">Issue</label>
                     <input type="text" class="form-control" name="issue" placeholder="Enter Issue" required>
                 </div>
-                <div class="col-md-4 form-group">
+                <div class="col-md-4">
                     <label for="description">Description</label>
                     <input type="text" class="form-control" name="description" placeholder="Enter Description" required>
                 </div>
@@ -145,6 +147,10 @@ JOIN `{$lab}_monitors` m ON s.monitor_id = m.id");
                 <i class="fas fa-plus"></i> Add System
             </button>
         </form>
+        
+        <div class="mt-4 text-center">
+            <a href="lab_panel.php?lab=<?php echo $lab; ?>" class="btn btn-secondary">Back to Lab Panel</a>
+        </div>
     </div>
 
     <div class="container mt-5">
@@ -162,80 +168,89 @@ JOIN `{$lab}_monitors` m ON s.monitor_id = m.id");
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php while ($system = $systems->fetch_assoc()) { ?>
-                    <tr>
-                        <td><?php echo $system['id']; ?></td>
-                        <td><?php echo $system['cpu_id']; ?></td>
-                        <td><?php echo $system['ups_id']; ?></td>
-                        <td><?php echo $system['monitor_id']; ?></td>
-                        <td><?php echo $system['internet']; ?></td>
-                        <td><?php echo $system['issue']; ?></td>
-                        <td><?php echo $system['description']; ?></td>
-                        <td class="text-center">
-                            <form method="POST" style="display:inline;">
-                                <input type="hidden" name="system_id" value="<?php echo $system['id']; ?>">
-                                <button type="submit" class="btn btn-danger btn-sm" name="delete_system">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </form>
-                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $system['id']; ?>">
-                                <i class="fas fa-edit"></i> Edit
+            <tbody id="systemTable">
+                <?php foreach ($systems_list as $system) { ?>
+                <tr>
+                    <td><?php echo $system['id']; ?></td>
+                    <td><?php echo $system['cpu_id']; ?></td>
+                    <td><?php echo $system['ups_id']; ?></td>
+                    <td><?php echo $system['monitor_id']; ?></td>
+                    <td><?php echo $system['internet']; ?></td>
+                    <td><?php echo $system['issue']; ?></td>
+                    <td><?php echo $system['description']; ?></td>
+                    <td class="text-center">
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="system_id" value="<?php echo $system['id']; ?>">
+                            <button type="submit" class="btn btn-danger btn-sm" name="delete_system">
+                                <i class="fas fa-trash"></i> Delete
                             </button>
-                        </td>
-                    </tr>
+                        </form>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $system['id']; ?>">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </td>
+                </tr>
                 <?php } ?>
             </tbody>
         </table>
+    </div>
 
-        <!-- Edit Modal -->
-        <?php while ($system = $systems->fetch_assoc()) { ?>
-        <div class="modal fade" id="editModal<?php echo $system['id']; ?>" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit System ID <?php echo $system['id']; ?></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST">
-                            <input type="hidden" name="system_id" value="<?php echo $system['id']; ?>">
-                            <div class="mb-3">
-                                <label>CPU ID</label>
-                                <input type="text" class="form-control" name="cpu_id" value="<?php echo $system['cpu_id']; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>UPS ID</label>
-                                <input type="text" class="form-control" name="ups_id" value="<?php echo $system['ups_id']; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Monitor ID</label>
-                                <input type="text" class="form-control" name="monitor_id" value="<?php echo $system['monitor_id']; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Internet</label>
-                                <select name="internet" class="form-select">
-                                    <option value="Yes" <?php echo ($system['internet'] == 'Yes') ? 'selected' : ''; ?>>Yes</option>
-                                    <option value="No" <?php echo ($system['internet'] == 'No') ? 'selected' : ''; ?>>No</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label>Issue</label>
-                                <input type="text" class="form-control" name="issue" value="<?php echo $system['issue']; ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Description</label>
-                                <input type="text" class="form-control" name="description" value="<?php echo $system['description']; ?>" required>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100 mt-3" name="update_system">
-                                <i class="fas fa-save"></i> Save Changes
-                            </button>
-                        </form>
-                    </div>
+    <script>
+        $(document).ready(function() {
+            $("#search").on("keyup", function() {
+                var searchText = $(this).val();
+                $.ajax({
+                    url: "search_systems.php",
+                    method: "POST",
+                    data: { query: searchText, lab: "<?php echo $lab; ?>" },
+                    success: function(response) {
+                        $("#systemTable").html(response);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Edit Modal -->
+    <?php foreach ($systems_list as $system) { ?>
+    <div class="modal fade" id="editModal<?php echo $system['id']; ?>" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit System ID <?php echo $system['id']; ?></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        <input type="hidden" name="system_id" value="<?php echo $system['id']; ?>">
+                        <div class="mb-3">
+                            <label>CPU ID</label>
+                            <input type="text" class="form-control" name="cpu_id" value="<?php echo $system['cpu_id']; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>UPS ID</label>
+                            <input type="text" class="form-control" name="ups_id" value="<?php echo $system['ups_id']; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Monitor ID</label>
+                            <input type="text" class="form-control" name="monitor_id" value="<?php echo $system['monitor_id']; ?>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Internet</label>
+                            <select name="internet" class="form-select">
+                                <option value="Yes" <?php echo ($system['internet'] == 'Yes') ? 'selected' : ''; ?>>Yes</option>
+                                <option value="No" <?php echo ($system['internet'] == 'No') ? 'selected' : ''; ?>>No</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-3" name="update_system">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-        <?php } ?>
     </div>
+    <?php } ?>
 </body>
 </html>
+

@@ -23,13 +23,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $working_condition = $_POST['working_condition'] ?? 'Good';
     
     if (isset($_POST['add_device']) && !empty($device_name)) {
-        $conn->query("INSERT INTO devices (device_name, working_condition) VALUES ('$device_name', '$working_condition')");
+        $stmt = $conn->prepare("INSERT INTO devices (device_name, working_condition) VALUES (?, ?)");
+        $stmt->bind_param("ss", $device_name, $working_condition);
+        $stmt->execute();
     } elseif (isset($_POST['update_device'])) {
         $device_id = $_POST['device_id'];
-        $conn->query("UPDATE devices SET device_name='$device_name', working_condition='$working_condition' WHERE id=$device_id");
+        $stmt = $conn->prepare("UPDATE devices SET device_name=?, working_condition=? WHERE id=?");
+        $stmt->bind_param("ssi", $device_name, $working_condition, $device_id);
+        $stmt->execute();
     } elseif (isset($_POST['delete_device'])) {
         $device_id = $_POST['device_id'];
-        $conn->query("DELETE FROM devices WHERE id=$device_id");
+        $stmt = $conn->prepare("DELETE FROM devices WHERE id=?");
+        $stmt->bind_param("i", $device_id);
+        $stmt->execute();
     }
 }
 
@@ -44,6 +50,19 @@ $devices = $conn->query("SELECT * FROM devices ORDER BY time_added DESC");
     <title>Manage Devices - <?php echo htmlspecialchars($lab); ?></title>
     <link rel="stylesheet" href="../assets/style.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        function searchLogs() {
+            let input = document.getElementById("searchDevice").value;
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "search_devices.php?lab=<?php echo $lab; ?>&query=" + encodeURIComponent(input), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("logsTable").innerHTML = xhr.responseText;
+                }
+            }; 
+            xhr.send();
+        }
+    </script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -188,6 +207,7 @@ $devices = $conn->query("SELECT * FROM devices ORDER BY time_added DESC");
 
 <div class="container">
     <h2>Manage Devices for <?php echo htmlspecialchars($lab); ?></h2>
+    <input type="text" id="searchDevice" placeholder="Search by Device Name..." onkeyup="searchLogs()">
 
     <h3>Add New Device</h3>
     <form method="POST">
@@ -211,7 +231,7 @@ $devices = $conn->query("SELECT * FROM devices ORDER BY time_added DESC");
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="logsTable">
             <?php while ($device = $devices->fetch_assoc()) { ?>
             <tr>
                 <td><?php echo $device['id']; ?></td>
@@ -221,7 +241,7 @@ $devices = $conn->query("SELECT * FROM devices ORDER BY time_added DESC");
                 <td class="actions">
                     <form method="POST">
                         <input type="hidden" name="device_id" value="<?php echo $device['id']; ?>">
-                        <input type="text" name="device_name" value="<?php echo $device['device_name']; ?>" required>
+                        <input type="text" name="device_name" value="<?php echo htmlspecialchars($device['device_name']); ?>" required>
                         <select name="working_condition">
                             <option value="Good" <?php echo ($device['working_condition'] == 'Good') ? 'selected' : ''; ?>>Good</option>
                             <option value="Needs Repair" <?php echo ($device['working_condition'] == 'Needs Repair') ? 'selected' : ''; ?>>Needs Repair</option>

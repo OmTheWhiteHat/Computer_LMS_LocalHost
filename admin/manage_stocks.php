@@ -189,6 +189,10 @@ $stocks = $conn->query("SELECT * FROM `{$lab}_stocks`");
             <div class="card-header">
                 <h5 class="card-title">Existing Stock</h5>
             </div>
+            <div class="m-3">
+                <input type="text" id="searchStock" class="form-control" placeholder="Search stock items...">
+            </div>
+
             <div class="card-body">
                 <table class="table table-bordered">
                     <thead>
@@ -199,7 +203,7 @@ $stocks = $conn->query("SELECT * FROM `{$lab}_stocks`");
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="stockTable">
                         <?php while ($stock = $stocks->fetch_assoc()) { ?>
                         <tr>
                             <td><?php echo $stock['id']; ?></td>
@@ -223,6 +227,25 @@ $stocks = $conn->query("SELECT * FROM `{$lab}_stocks`");
                         </tr>
                         <?php } ?>
                     </tbody>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $("#searchStock").on("keyup", function () {
+        let query = $(this).val();
+        let lab = "<?php echo htmlspecialchars($lab); ?>";
+        
+        $.ajax({
+            url: "search_stock.php",
+            method: "GET",
+            data: { lab: lab, query: query },
+            success: function (data) {
+                $("#stockTable").html(data);
+            }
+        });
+    });
+});
+</script>
+
                 </table>
             </div>
         </div>

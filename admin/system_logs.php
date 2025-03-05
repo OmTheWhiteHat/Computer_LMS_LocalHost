@@ -90,6 +90,14 @@ $logs = $conn->query("SELECT * FROM `system_logs` ORDER BY timestamp DESC");
         .back-btn:hover {
             background-color: #218838;
         }
+        #searchUser {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
 
         /* Responsive Styles */
         @media (max-width: 768px) {
@@ -107,6 +115,20 @@ $logs = $conn->query("SELECT * FROM `system_logs` ORDER BY timestamp DESC");
 
 <div class="container">
     <h2>System Logs</h2>
+    <input type="text" id="searchUser" placeholder="Search by Username..." onkeyup="searchLogs()">
+    <script>
+function searchLogs() {
+    let input = document.getElementById("searchUser").value;
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", "search_logs.php?query=" + input, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById("logsTable").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+</script>
 
     <!-- Log Table -->
     <table>
@@ -118,16 +140,19 @@ $logs = $conn->query("SELECT * FROM `system_logs` ORDER BY timestamp DESC");
                 <th>Username</th>
             </tr>
         </thead>
-        <tbody>
-            <?php while ($log = $logs->fetch_assoc()) { ?>
-            <tr>
-                <td><?php echo $log['id']; ?></td>
-                <td><?php echo $log['timestamp']; ?></td>
-                <td><?php echo isset($log['action']) ? htmlspecialchars($log['action']) : 'N/A'; ?></td>
-                <td><?php echo htmlspecialchars($log['username']); ?></td>
-            </tr>
-            <?php } ?>
-        </tbody>
+        <tbody id="logsTable">
+    <?php while ($log = $logs->fetch_assoc()) { ?>
+    <tr>
+        <td><?php echo $log['id']; ?></td>
+        <td><?php echo $log['timestamp']; ?></td>
+        <td><?php echo isset($log['action']) ? htmlspecialchars($log['action']) : 'N/A'; ?></td>
+        <td><?php echo htmlspecialchars($log['username']); ?></td>
+    </tr>
+    <?php } ?>
+</tbody>
+
+
+
     </table>
 
     <a href="lab_panel.php?lab=<?php echo $lab; ?>" class="back-btn">Back to Lab Panel</a>

@@ -50,8 +50,13 @@ $lab = $_GET['lab'];
             color: #333;
             font-size: 32px;
             margin-bottom: 20px;
+            
         }
-
+        .container h2 span
+        {
+            content: '';
+            text-transform: uppercase;
+        }
         p.lead {
             font-size: 18px;
             color: #666;
@@ -159,6 +164,7 @@ $lab = $_GET['lab'];
         /* Media queries for responsiveness */
         @media (max-width: 768px) {
             .container {
+                margin-top: 150px;
                 padding: 25px;
             }
 
@@ -185,7 +191,7 @@ $lab = $_GET['lab'];
 <body>
 
 <div class="container">
-    <h2>Managing <?php echo htmlspecialchars($lab); ?></h2>
+    <h2>Managing <span><?php echo htmlspecialchars($lab); ?></span></h2>
     <p class="lead">Choose an option below to manage the lab's systems, devices, stocks, and more.</p>
 
     <!-- Action List -->

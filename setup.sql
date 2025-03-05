@@ -59,7 +59,7 @@ CREATE TABLE lab_A.lab_A_monitors (
 );
 
 CREATE TABLE lab_A.devices (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `device_name` varchar(255) NOT NULL,
   `working_condition` enum('Good','Needs Repair','Not Working') DEFAULT 'Good',
   `time_added` timestamp NOT NULL DEFAULT current_timestamp()
