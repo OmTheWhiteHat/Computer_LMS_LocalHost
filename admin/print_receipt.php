@@ -56,6 +56,26 @@ $result = $conn->query($query);
         .print-button:hover {
             background-color: #218838;
         }
+        .primary-button
+        {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color:rgb(238, 68, 17);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .primary-button:hover
+        {
+            background-color: rgb(195, 45, 0);
+        }
+        .primary-button a
+        {
+            text-decoration: none;
+            color : #fff;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +98,7 @@ $result = $conn->query($query);
         </table>
     </div>
     <button class="print-button" onclick="window.print();">Print Receipt</button>
+    <button class="primary-button"><a href="lab_panel.php?lab=<?php echo $lab; ?>" class="back-btn">Back to Lab Panel</a></button>
     <!-- <script>
         function printReceipt() {
             let printContent = document.getElementById("receipt").innerHTML;

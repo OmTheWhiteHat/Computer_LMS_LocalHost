@@ -35,88 +35,117 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
     <title>Manage Issues - <?php echo htmlspecialchars($lab); ?></title>
     <link rel="stylesheet" href="../assets/style.css">
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
             padding: 20px;
+            margin: 0;
             text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
-            background: white;
-            padding: 20px;
+            background-color: white;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
         }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #007bff;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background: #f2f2f2;
-        }
-        tr:hover {
-            background: #d1e7fd;
-        }
+
+        /* Form Styling */
         form {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        input, select {
+        select, input {
             width: 80%;
-            padding: 8px;
+            padding: 10px;
             margin: 10px 0;
+            border-radius: 8px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            font-size: 1rem;
         }
         button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
-            background: #28a745;
-            color: white;
+            border-radius: 8px;
             font-weight: bold;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #d1e7fd;
+        }
+
+        /* Action Button Styles */
+        .resolve-btn {
+            padding: 8px 14px;
+            background-color: #28a745;
+            color: white;
             border-radius: 5px;
             cursor: pointer;
         }
-        button:hover {
-            background: #218838;
-        }
-        .resolve-btn {
-            background: red;
-            margin-left: 10px;
-        }
         .resolve-btn:hover {
-            background: darkred;
+            background-color: #218838;
         }
+        .resolve-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Back Button */
         .back-btn {
-            display: block;
-            width: fit-content;
-            margin: 20px auto;
-            padding: 10px 15px;
-            background: #007bff;
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #28a745;
             color: white;
+            border-radius: 8px;
             text-decoration: none;
-            border-radius: 5px;
         }
         .back-btn:hover {
-            background: #0056b3;
+            background-color: #218838;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            select, input, button {
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -125,7 +154,7 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
 <div class="container">
     <h2>Manage Issues for <?php echo htmlspecialchars($lab); ?></h2>
 
-    <!-- ✅ Form to Add Issues -->
+    <!-- Add Issue Form -->
     <form method="post">
         <select name="device_type" required>
             <option value="">Select Device Type</option>
@@ -142,54 +171,65 @@ $resolved_issues = $conn->query("SELECT * FROM `{$lab}_issues` WHERE status='Res
             <option value="Router">Router</option>
         </select>
         <input type="text" name="description" placeholder="Enter issue description..." required>
-    
         <button type="submit" name="add_issue">Add Issue</button>
     </form>
-<br>
-    <!-- ✅ Active Issues -->
-    <h3>Pending Issues</h3>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Device Type</th>
-            <th>Issue Description</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-        <?php while ($issue = $active_issues->fetch_assoc()) { ?>
-        <tr>
-            <td><?php echo $issue['id']; ?></td>
-            <td><?php echo htmlspecialchars($issue['device_type']); ?></td>
-            <td><?php echo htmlspecialchars($issue['description']); ?></td>
-            <td><?php echo $issue['status']; ?></td>
-            <td>
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="issue_id" value="<?php echo $issue['id']; ?>">
-                    <button type="submit" name="resolve_issue" class="resolve-btn">Resolve</button>
-                </form>
-            </td>
-        </tr>
-        <?php } ?>
-    </table>
-<br>
-    <!-- ✅ Resolved Issues -->
-    <h3>Resolved Issues</h3>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Device Type</th>
-            <th>Issue Description</th>
-            <th>Status</th>
-        </tr>
-        <?php while ($issue = $resolved_issues->fetch_assoc()) { ?>
-        <tr>
-            <td><?php echo $issue['id']; ?></td>
-            <td><?php echo htmlspecialchars($issue['device_type']); ?></td>
-            <td><?php echo htmlspecialchars($issue['description']); ?></td>
-            <td><?php echo $issue['status']; ?></td>
-        </tr>
-        <?php } ?>
-    </table>
+
+    <!-- Pending Issues Table -->
+    <div class="issues-section">
+        <h3>Pending Issues</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Device Type</th>
+                    <th>Issue Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($issue = $active_issues->fetch_assoc()) { ?>
+                <tr>
+                    <td><?php echo $issue['id']; ?></td>
+                    <td><?php echo htmlspecialchars($issue['device_type']); ?></td>
+                    <td><?php echo htmlspecialchars($issue['description']); ?></td>
+                    <td><?php echo $issue['status']; ?></td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="issue_id" value="<?php echo $issue['id']; ?>">
+                            <button type="submit" name="resolve_issue" class="resolve-btn">Resolve</button>
+                        </form>
+                    </td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Resolved Issues Table -->
+    <div class="issues-section">
+        <h3>Resolved Issues</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Device Type</th>
+                    <th>Issue Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($issue = $resolved_issues->fetch_assoc()) { ?>
+                <tr>
+                    <td><?php echo $issue['id']; ?></td>
+                    <td><?php echo htmlspecialchars($issue['device_type']); ?></td>
+                    <td><?php echo htmlspecialchars($issue['description']); ?></td>
+                    <td><?php echo $issue['status']; ?></td>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
 
     <a href="lab_panel.php?lab=<?php echo $lab; ?>" class="back-btn">Back to Lab Panel</a>
 </div>

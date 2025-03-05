@@ -109,7 +109,7 @@ $labs = ["lab_A", "lab_B", "lab_C", "lab_D"]; // Available labs
         <?php foreach ($labs as $lab) { ?>
             <div class="lab-card">
                 <h3><?php echo strtoupper($lab); ?></h3>
-                <p>Manage devices, systems, and logs.</p>
+                <p>Manage devices, systems, and logs of <?php echo strtoupper($lab); ?></p>
                 <a href="lab_panel.php?lab=<?php echo $lab; ?>">Manage</a>
             </div>
         <?php } ?>

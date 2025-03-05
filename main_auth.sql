@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 02, 2025 at 08:32 AM
+-- Generation Time: Mar 05, 2025 at 05:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,19 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `devices`
---
-
-CREATE TABLE `devices` (
-  `id` int(11) NOT NULL,
-  `device_name` varchar(255) NOT NULL,
-  `working_condition` enum('Good','Needs Repair','Not Working') DEFAULT 'Good',
-  `time_added` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `labs`
 --
 
@@ -51,10 +38,31 @@ CREATE TABLE `labs` (
 --
 
 INSERT INTO `labs` (`id`, `lab_name`, `database_name`) VALUES
-(1, 'CSE-01', 'lab-A'),
-(2, 'CSE-02', 'lab-B'),
-(3, 'CAD', 'lab-C'),
-(4, 'MAT', 'lab-D');
+(1, 'CS-01', 'lab_A'),
+(2, 'CS-02', 'lab_B'),
+(3, 'CAD', 'lab_C'),
+(4, 'MAT', 'lab_D');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `system_logs`
+--
+
+CREATE TABLE `system_logs` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `action` varchar(50) NOT NULL,
+  `ip_address` varchar(50) DEFAULT NULL,
+  `timestamp` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `system_logs`
+--
+
+INSERT INTO `system_logs` (`id`, `username`, `action`, `ip_address`, `timestamp`) VALUES
+(1, 'admin', 'Login', '::1', '2025-03-05 05:43:57');
 
 -- --------------------------------------------------------
 
@@ -66,8 +74,6 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `reset_token` varchar(255) DEFAULT NULL,
-  `reset_expiry` datetime DEFAULT NULL,
   `rmail` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -75,18 +81,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password_hash`, `reset_token`, `reset_expiry`, `rmail`) VALUES
-(1, 'admin', '$2y$10$V1cK3e5f9Q.APeNkFM41N.v2ZmmuS5uGlz1j7GF1Ab.mItHAE0vNS', '3d2ae4afb40c3600e48e70f37468dcca69c8796e318da3800f1c925d55dc6c54e56956a66fd8d7eadfb22815d6fffd2cf75c', '2025-03-02 08:44:45', 'omprakashbehera.cse@gmail.com');
+INSERT INTO `users` (`id`, `username`, `password_hash`, `rmail`) VALUES
+(0, 'admin', '$2y$10$6oNmHZHapbybJOi9ekTg7.tV9BcaAiYz2aopGp/gHJmPN9YsaLPDq', 'admin@gmail.com');
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `devices`
---
-ALTER TABLE `devices`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `labs`
@@ -97,21 +97,14 @@ ALTER TABLE `labs`
   ADD UNIQUE KEY `database_name` (`database_name`);
 
 --
--- Indexes for table `users`
+-- Indexes for table `system_logs`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+ALTER TABLE `system_logs`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `devices`
---
-ALTER TABLE `devices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `labs`
@@ -120,9 +113,9 @@ ALTER TABLE `labs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT for table `system_logs`
 --
-ALTER TABLE `users`
+ALTER TABLE `system_logs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 

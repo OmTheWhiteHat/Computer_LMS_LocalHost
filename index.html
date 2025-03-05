@@ -1,156 +1,667 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Lab Management System</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="public_style.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+
+  <title>LMS - An Ultimate Lab Management System</title>
 </head>
 <body>
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+  <script src="assests/script.js"></script>
+  <header class="menu delay animate__animated animate__backInDown">
+    <ul>
+      <a href="#top" class="navLink"><li>Home</li></a>
+      <a href="#feature" class="navLink"><li>Features</li></a>
+      <a href="#vision" class="navLink"><li>Vision</li></a>
+      <a href="#lms" class="navLink"><li>LMS</li></a>
+      <a href="#about" class="navLink"><li>About</li></a>
+    </ul>
+  </header>
+  <div class="menu-mb delay animate__animated animate__fadeIn">
+    <div class="menu-toggle" id="mobile-menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+    <ul id="menu-list">
+      <a href="#top" class="navLink"><li>Home</li></a>
+      <a href="#feature" class="navLink"><li>Features</li></a>
+      <a href="#vision" class="navLink"><li>Vision</li></a>
+      <a href="#lms" class="navLink"><li>LMS</li></a>
+      <a href="#about" class="navLink"><li>About</li></a>
+    </ul>
+  </div>
+  <script>
+ // Grab the toggle button and the menu list
+// Get the menu, menu toggle, and menu list elements
+// JavaScript to toggle the mobile menu
+// JavaScript to toggle the mobile menu
+document.getElementById('mobile-menu').addEventListener('click', function() {
+  const menu = document.querySelector('.menu-mb');
+  const menuToggle = document.getElementById('mobile-menu');
+  menu.classList.toggle('active');
+  menuToggle.classList.toggle('active');
+  document.body.classList.toggle('menu-active');
+});
 
-/* Header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #007bff;
-    padding: 15px 20px;
-    color: white;
-}
+// Intersection Observer to add active class to menu items based on visible section
+const sections = document.querySelectorAll('section, .more, .more1, .herosection, .about, .infinite-scroll');
+const navLinks = document.querySelectorAll('.navLink');
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
+// Observer options
+const options = {
+  root: null, // Use the viewport as the root
+  threshold: 0.5 // Trigger when at least 50% of the section is visible
+};
 
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
+// Intersection Observer callback function
+const observerCallback = (entries, observer) => {
+  entries.forEach(entry => {
+    const link = document.querySelector(`a[href="#${entry.target.id}"]`);
 
-nav ul li {
-    display: inline;
-}
+    if (entry.isIntersecting) {
+      // Add active class to the corresponding link
+      link.classList.add('active');
+    } else {
+      // Remove active class when not in view
+      link.classList.remove('active');
+    }
+  });
+};
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-}
+// Create the observer
+const observer = new IntersectionObserver(observerCallback, options);
 
-.hero {
-    text-align: center;
-    padding: 100px 20px;
-    background: linear-gradient(to right, #007bff, #0056b3);
-    color: white;
-}
+// Observe each section
+sections.forEach(section => {
+  observer.observe(section);
+});
 
-.hero h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
+  </script>
+  <!-- <div class="loader"></div> -->
+  <main>
+    <div id="main_up" class="delay animate__animated animate__backInUp">
+        <p id="up_hour">00</p>
+        <p>:</p>
+        <p id="up_min">00</p>
+        <p>:</p>
+        <p id="up_sec">00</p>
+    </div>
+  </main>
+<script>
+  let hour = document.getElementById("up_hour");
+  let min = document.getElementById("up_min");
+  let sec = document.getElementById("up_sec");
 
-.hero p {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
+// Function
+const updateTime = () => {
+  let time = new Date();
+  hour.innerText = time.getHours()
+  min.innerText = time.getMinutes()
+  sec.innerText = time.getSeconds()
+};
+// Updating
+setInterval(updateTime, 1000);
+</script>
+<div class="herosection" id="top">
+    <div class="herotext delay animate__animated animate__zoomIn">
+      <h1>LAB</h1>
+      <h1><span>M</span>ANAGEMEN<span>T</span></h1>
+      <h1><span>S</span>YSTE<span>M</span></h1>
+      
+      <div class="typer">
+        <h3><span class="typing"></span></h3>
+    <script>
+      const quotes = [
+          "An Ultimate Lab Management System designed By CSE Students.",
+          "Manage smart, work smart.",
+          "Efficiency drives innovation.",
+          "Our lab , Our responsible.",
+          "In the realm of technology, seamless management paves the way for boundless innovation."
+      ];
+  
+      const quoteElement = document.querySelector('.typing');
+      let currentQuoteIndex = 0;
+      let currentCharIndex = 0;
+      let typingSpeed = 50; // Adjust typing speed here
 
-.btn {
-    background: white;
-    color: #007bff;
-    padding: 10px 20px;
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 5px;
-    font-weight: bold;
-}
+      function displayQuote() {
+          const quote = quotes[currentQuoteIndex];
+          if (currentCharIndex < quote.length) {
+              quoteElement.innerHTML += quote.charAt(currentCharIndex);
+              currentCharIndex++;
+              setTimeout(displayQuote, typingSpeed);
+          } else {
+              setTimeout(eraseQuote, 2000); // Wait for 2 seconds before erasing
+          }
+      }
+  
+      function eraseQuote() {
+          if (currentCharIndex >= 0) {
+              const quote = quotes[currentQuoteIndex];
+              quoteElement.innerHTML = quote.substring(0, currentCharIndex);
+              currentCharIndex--;
+              setTimeout(eraseQuote, 100); // Adjust erasing speed here
+          } else {
+              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+              setTimeout(displayQuote, 1000); // Wait for 0.5 seconds before displaying next quote
+          }
+      }
+  
+      displayQuote();
+    </script>
+      </div>
+      <div class="gotoLMS">
+          <!-- From Uiverse.io by gharsh11032000 --> 
+        <!-- <a href="public/login.php"> -->
+          <button class="animated-button" id="redirect_button">
+  <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+    ></path>
+  </svg>
+  <span class="text" id="lms-btn-text">GOTO LMS</span>
+  <span class="circle"></span>
+  <svg viewBox="0 0 24 24" class="arr-1" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"
+    ></path>
+  </svg>
+</button>
+<!-- </a> -->
+<script>
+  // JavaScript to handle the redirection with delay
+  document.getElementById('redirect_button').addEventListener('click', function(e) {
+    e.preventDefault();  // Prevent default button behavior
+  
+  // Change button text to indicate the redirect
+  const button = document.getElementById('lms-btn-text');
+  button.innerHTML = "Redirecting...";  // Change text while redirecting
+  
+  // Wait for 2 seconds before redirecting
+  setTimeout(function() {
+    window.location.href = "public/login.php";  // Redirect to the login page
+  }, 2000);  // 2000ms = 2 seconds
+});
 
-.features {
-    text-align: center;
-    padding: 50px 20px;
-}
 
-.features h2 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
+</script>
+      </div>
+    </div>
+  </div>
 
-.feature-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-}
+  <!-- Features Section -->
+  <div class="more" id="feature">
+    <div class="glass-panel"></div>
+    <div class="decorative-circle-left"></div>
+    <div class="decorative-circle-right"></div>
+    <div class="items">
+      <h2>Features of Our Lab Management System<span class="underBar"></span></h2>
+      <p>Our Lab Management System provides the ultimate solution to manage and monitor all lab-related activities seamlessly. Some of the key features include:</p>
+      <ul>
+        <li><strong>Asset Management:</strong> Track all lab equipment, from computers to monitors and other peripherals.</li>
+        <li><strong>System Monitoring:</strong> Monitor the status of all systems in the lab, including CPU, RAM, storage, and internet connectivity.</li>
+        <li><strong>Issue Tracking:</strong> Report and track issues related to lab equipment and manage repairs or replacements.</li>
+        <li><strong>User Authentication:</strong> Secure login for students and staff with roles and permissions.</li>
+        <li><strong>Inventory Management:</strong> Manage lab supplies and resources, ensuring all necessary materials are available.</li>
+        <li><strong>Reports:</strong> Generate reports based on usage, performance, and issues.</li>
+      </ul>
+    </div>
+    <div class="glass-panel"></div>
+  </div>
 
-.feature {
-    background: white;
-    padding: 20px;
-    width: 250px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+  <!-- Vision Section -->
+  <div class="more1" id="vision">
+    <div class="decorative-rectangle-left-top"></div>
+    <div class="decorative-triangle-right"></div>
+    <div class="glass-panel">
+    <h2>Our Vision</h2>
+    <p>Our vision is to build a seamless and highly efficient Lab Management System that allows educational institutions to efficiently manage their resources, improve productivity, and enhance student learning experiences. We aim to provide a centralized platform that enables easy monitoring, reporting, and maintenance of lab equipment and resources.</p>
+    <p>We aspire to transform the way educational labs operate, with a focus on sustainability, performance, and innovation. By incorporating the latest technology trends, we aim to build a system that will grow and evolve with the future needs of educational institutions.</p>
+    </div>
+  </div>
+<!-- LMS Section -->
+<div class="lms-section" id="lms">
+  <div class="container">
+    <div class="content">
+      <h2 class="section-title">Lab Management System</h2>
+      <div class="section-description">
+        Our <span class="highlight">Lab Management System</span> helps efficiently manage laboratory resources, track experiments, and organize test results. With features such as equipment tracking, scheduling, inventory management, and more, it ensures smooth operation and optimal use of laboratory assets.
+      </div>
+      
+      <ul class="features-list">
+        <li><strong>Equipment Tracking:</strong> Easily track laboratory equipment and ensure proper maintenance schedules.</li>
+        <li><strong>Experiment Scheduling:</strong> Schedule and manage experiments with a built-in calendar and alerts.</li>
+        <li><strong>Inventory Management:</strong> Keep track of chemicals, materials, and supplies used in the lab.</li>
+        <li><strong>Report Generation:</strong> Automatically generate and store reports for each experiment.</li>
+        <li><strong>Collaboration:</strong> Collaborate with team members and share data in real-time.</li>
+      </ul>
 
-footer {
-    text-align: center;
-    background: #007bff;
-    color: white;
-    padding: 10px 0;
-    margin-top: 20px;
-}
-
-    </style>
-    <header>
-        <div class="logo">CLMS</div>
-        <nav>
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="public/login.php">Login</a></li>
-                <li><a href="public/register.php">Register</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Manage Your Computer Lab Efficiently</h1>
-            <p>Streamline lab operations, manage inventory, track logs, and resolve issues seamlessly.</p>
-            <a href="public/login.php" class="btn">Get Started</a>
+ <div class="gotoLMS-from-section">
+<div class="btn-conteiner">
+  <a class="btn-content" href="public/login.php">
+    <span class="btn-title">GOTO LMS</span>
+    <span class="icon-arrow">
+      <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="arrow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <path id="arrow-icon-one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF"></path>
+          <path id="arrow-icon-two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF"></path>
+          <path id="arrow-icon-three" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z" fill="#FFFFFF"></path>
+        </g>
+      </svg>
+    </span> 
+  </a>
+</div>
+</div>
+    </div>
+  </div>
+</div>
+  <!-- About Section -->
+  <div class="about" id="about">
+    <div class="guider-card">
+    <h1>Our Project Guider</h1>
+    <div class="guider">
+      <img src="assests/user.png" alt="">
+      <div class="info">
+        <h3>Er. Satabdi Palit</h3>
+        <h4>Project Guide</h4>
+        <h4>Senior Lecturer at Bhadrak Engineering School & Technology</h4>
+      </div>
+      <div class="social-icon">
+        <a href=""><i class='bx bxl-github'></i></a>
+        <a href=""><i class='bx bxl-linkedin' ></i></a>
+        <a href=""><i class='bx bxl-twitter'></i></a>
+        <a href=""><i class='bx bxl-instagram'></i></a>
+      </div>
+    </div>
+    </div>
+    <h1 class="dev-title">Our Project Guider <span></span></h1>
+    <div class="dev">
+      
+      <div class="dev-card">
+        <h1>Om Prakash Behera</h1>
+        <p>Full Stack Developer</p>
+        <div class="social">
+            <a href=""><i class='bx bxl-github'></i></a>
+            <a href=""><i class='bx bxl-linkedin-square' ></i></a>
+            <a href=""><i class='bx bxl-instagram-alt' ></i></a>
         </div>
-    </section>
+      </div>
+      <div class="dev-card">
+        <h1>2nd Developer</h1>
+        <p>Jane Smith - Front-End Developer</p>
+        <div class="social">
+          <a href=""><i class='bx bxl-github'></i></a>
+          <a href=""><i class='bx bxl-linkedin-square' ></i></a>
+          <a href=""><i class='bx bxl-instagram-alt' ></i></a>
+      </div>
+      </div>
+      <div class="dev-card">
+        <h1>3rd Developer</h1>
+        <p>Jack Brown - Back-End Developer</p>
+        <div class="social">
+          <a href=""><i class='bx bxl-github'></i></a>
+          <a href=""><i class='bx bxl-linkedin-square' ></i></a>
+          <a href=""><i class='bx bxl-instagram-alt' ></i></a>
+      </div>
+      </div>
+      <div class="dev-card">
+        <h1>4th Developer</h1>
+        <p>Emily White - Database Specialist</p>
+        <div class="social">
+          <a href=""><i class='bx bxl-github'></i></a>
+          <a href=""><i class='bx bxl-linkedin-square' ></i></a>
+          <a href=""><i class='bx bxl-instagram-alt' ></i></a>
+      </div>
+      </div>
+      <div class="dev-card">
+        <h1>5th Developer</h1>
+        <p>Chris Green - UI/UX Designer</p>
+        <div class="social">
+          <a href=""><i class='bx bxl-github'></i></a>
+          <a href=""><i class='bx bxl-linkedin-square' ></i></a>
+          <a href=""><i class='bx bxl-instagram-alt' ></i></a>
+      </div>
+      </div>
+    </div>
+    <!-- CONTACT US SECTION -->
+     <!-- 
+    =======================================================================
 
-    <section id="features" class="features">
-        <h2>Key Features</h2>
-        <div class="feature-grid">
-            <div class="feature">
-                <h3>Device Management</h3>
-                <p>Track and manage all systems and devices in the lab.</p>
-            </div>
-            <div class="feature">
-                <h3>Issue Resolution</h3>
-                <p>Report and resolve hardware/software issues efficiently.</p>
-            </div>
-            <div class="feature">
-                <h3>Inventory Tracking</h3>
-                <p>Keep records of stock levels and lab equipment usage.</p>
-            </div>
-            <div class="feature">
-                <h3>System Logs</h3>
-                <p>Monitor lab activity with real-time logs and reports.</p>
-            </div>
-        </div>
-    </section>
+    This is a working contact form. To receive email, 
+    Replace YOUR_ACCESS_KEY_HERE with your actual Access Key.
 
-    <footer>
-        <p>&copy; 2025 Computer Lab Management System | All Rights Reserved</p>
-    </footer>
+    Create Access Key here 👉 https://web3forms.com/
 
+    =======================================================================
+ -->
+
+ <div class="flex items-center min-h-screen contact-us">
+  <div class="container mx-auto">
+    <div class="max-w-3xl mx-auto my-10  p-8 rounded-md shadow-lg">
+      <div class="text-center">
+        <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">
+          Contact Us
+        </h1>
+        <p class="text-gray-400 dark:text-gray-400">
+          Fill up the form below to send us a message.
+        </p>
+      </div>
+      <div class="m-7">
+        <form action="https://api.web3forms.com/submit" method="POST" id="form" class="needs-validation" novalidate>
+          <input type="hidden" name="access_key" value="607c3b52-1cf7-4020-87b9-4d265261f792" />
+          <input type="hidden" name="subject" value="New Submission from Web3Forms" />
+          <input type="checkbox" name="botcheck" id="" style="display: none;" />
+
+          <!-- Name Fields -->
+          <div class="flex mb-6 space-x-4">
+            <div class="w-full md:w-1/2">
+              <label for="fname" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">First Name</label>
+              <input type="text" name="name" id="first_name" placeholder="John" required class="w-full px-3 py-2 placeholder-gray-300 border-2 border-gray-200 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300" />
+              <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+                Please provide your first name.
+              </div>
+            </div>
+            <div class="w-full md:w-1/2">
+              <label for="lname" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Last Name</label>
+              <input type="text" name="last_name" id="lname" placeholder="Doe" required class="w-full px-3 py-2 placeholder-gray-300 border-2 border-gray-200 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300" />
+              <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+                Please provide your last name.
+              </div>
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="flex mb-6 space-x-4">
+            <div class="w-full">
+              <label for="email" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Email Address</label>
+              <input type="email" name="email" id="email" placeholder="you@company.com" required class="w-full px-3 py-2 placeholder-gray-300 border-2 border-gray-200 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300" />
+              <div class="empty-feedback text-red-400 text-sm mt-1">
+                Please provide your email address.
+              </div>
+              <div class="invalid-feedback text-red-400 text-sm mt-1">
+                Please provide a valid email address.
+              </div>
+            </div>
+          </div>
+
+          <!-- Message Field -->
+          <div class="mb-6">
+            <label for="message" class="block mb-2 text-sm text-gray-600 dark:text-gray-400">Your Message</label>
+            <textarea rows="5" name="message" id="message" placeholder="Your Message" class="w-full px-3 py-2 placeholder-gray-300 border-2 border-gray-200 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300" required></textarea>
+            <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+              Please enter your message.
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <!-- From Uiverse.io by JkHuger --> 
+<div class="sp">
+
+  <button class="sparkle-button">
+    <span class="spark"></span>
+    
+    <span class="backdrop"></span>
+    <svg class="sparkle" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14.187 8.096L15 5.25L15.813 8.096C16.0231 8.83114 16.4171 9.50062 16.9577 10.0413C17.4984 10.5819 18.1679 10.9759 18.903 11.186L21.75 12L18.904 12.813C18.1689 13.0231 17.4994 13.4171 16.9587 13.9577C16.4181 14.4984 16.0241 15.1679 15.814 15.903L15 18.75L14.187 15.904C13.9769 15.1689 13.5829 14.4994 13.0423 13.9587C12.5016 13.4181 11.8321 13.0241 11.097 12.814L8.25 12L11.096 11.187C11.8311 10.9769 12.5006 10.5829 13.0413 10.0423C13.5819 9.50162 13.9759 8.83214 14.186 8.097L14.187 8.096Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M6 14.25L5.741 15.285C5.59267 15.8785 5.28579 16.4206 4.85319 16.8532C4.42059 17.2858 3.87853 17.5927 3.285 17.741L2.25 18L3.285 18.259C3.87853 18.4073 4.42059 18.7142 4.85319 19.1468C5.28579 19.5794 5.59267 20.1215 5.741 20.715L6 21.75L6.259 20.715C6.40725 20.1216 6.71398 19.5796 7.14639 19.147C7.5788 18.7144 8.12065 18.4075 8.714 18.259L9.75 18L8.714 17.741C8.12065 17.5925 7.5788 17.2856 7.14639 16.853C6.71398 16.4204 6.40725 15.8784 6.259 15.285L6 14.25Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M6.5 4L6.303 4.5915C6.24777 4.75718 6.15472 4.90774 6.03123 5.03123C5.90774 5.15472 5.75718 5.24777 5.5915 5.303L5 5.5L5.5915 5.697C5.75718 5.75223 5.90774 5.84528 6.03123 5.96877C6.15472 6.09226 6.24777 6.24282 6.303 6.4085L6.5 7L6.697 6.4085C6.75223 6.24282 6.84528 6.09226 6.96877 5.96877C7.09226 5.84528 7.24282 5.75223 7.4085 5.697L8 5.5L7.4085 5.303C7.24282 5.24777 7.09226 5.15472 6.96877 5.03123C6.84528 4.90774 6.75223 4.75718 6.697 4.5915L6.5 4Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span class="text">Send Message</span>
+  </button>
+  <div class="bodydrop"></div>
+  <span aria-hidden="true" class="particle-pen">
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg><svg class="particle" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.937 3.846L7.75 1L8.563 3.846C8.77313 4.58114 9.1671 5.25062 9.70774 5.79126C10.2484 6.3319 10.9179 6.72587 11.653 6.936L14.5 7.75L11.654 8.563C10.9189 8.77313 10.2494 9.1671 9.70874 9.70774C9.1681 10.2484 8.77413 10.9179 8.564 11.653L7.75 14.5L6.937 11.654C6.72687 10.9189 6.3329 10.2494 5.79226 9.70874C5.25162 9.1681 4.58214 8.77413 3.847 8.564L1 7.75L3.846 6.937C4.58114 6.72687 5.25062 6.3329 5.79126 5.79226C6.3319 5.25162 6.72587 4.58214 6.936 3.847L6.937 3.846Z" fill="black" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </span>
+</div>
+
+          <!-- Result Text -->
+          <p class="text-base text-center text-gray-400" id="result"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+  "use strict";
+  /*
+   * Form Validation
+   */
+
+  // Fetch all the forms we want to apply custom validation styles to
+  const forms = document.querySelectorAll(".needs-validation");
+  const result = document.getElementById("result");
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener(
+      "submit",
+      function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          form.querySelectorAll(":invalid")[0].focus();
+        } else {
+          /*
+           * Form Submission using fetch()
+           */
+
+          const formData = new FormData(form);
+          event.preventDefault();
+          event.stopPropagation();
+          const object = {};
+          formData.forEach((value, key) => {
+            object[key] = value;
+          });
+          const json = JSON.stringify(object);
+          result.innerHTML = "Please wait...";
+
+          fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: json
+          })
+            .then(async (response) => {
+              let json = await response.json();
+              if (response.status == 200) {
+                result.innerHTML = json.message;
+                result.classList.remove("text-gray-500");
+                result.classList.add("text-green-500");
+              } else {
+                console.log(response);
+                result.innerHTML = json.message;
+                result.classList.remove("text-gray-500");
+                result.classList.add("text-red-500");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              result.innerHTML = "Something went wrong!";
+            })
+            .then(function () {
+              form.reset();
+              form.classList.remove("was-validated");
+              setTimeout(() => {
+                result.style.display = "none";
+              }, 5000);
+            });
+        }
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
+})();
+
+</script>
+<!-- Contact us form End-->
+  </div>
+
+  <!-- Infinite Scroll Section -->
+  <div class="infinite-scroll">
+    <h1>Technologies We Use</h1>
+    <div class="scroll" style="--time:20s">
+      <div>
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>JavaScript</span>
+          <span>ReactJS</span>
+          <span>Figma</span>
+          <span>Angular</span>
+          <span>Node JS</span>
+          <span>PHP</span>
+      </div>
+      <div>
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>JavaScript</span>
+          <span>ReactJS</span>
+          <span>Figma</span>
+          <span>Angular</span>
+          <span>Node JS</span>
+          <span>PHP</span>
+      </div>
+  </div>
+  <div class="scroll" style="--time:30s">
+      <div>
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>JavaScript</span>
+          <span>ReactJS</span>
+          <span>Figma</span>
+          <span>Angular</span>
+          <span>Node JS</span>
+          <span>PHP</span>
+      </div>
+      <div>
+          <span>HTML</span>
+          <span>CSS</span>
+          <span>JavaScript</span>
+          <span>ReactJS</span>
+          <span>Figma</span>
+          <span>Angular</span>
+          <span>Node JS</span>
+          <span>PHP</span>
+      </div>
+  </div>
+  <div class="scroll" style="--time:40s">
+    <div>
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+        <span>ReactJS</span>
+        <span>Figma</span>
+        <span>Angular</span>
+        <span>Node JS</span>
+        <span>PHP</span>
+    </div>
+    <div>
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+        <span>ReactJS</span>
+        <span>Figma</span>
+        <span>Angular</span>
+        <span>Node JS</span>
+        <span>PHP</span>
+    </div>
+</div>
+  <div class="scroll imgBox" style="--time:25s">
+      <div>
+          <img src="assests/images/html.png" alt="">
+          <img src="assests/images/css.png" alt="">
+          <img src="assests/images/js.png" alt="">
+          <img src="assests/images/React.png" alt="">
+          <img src="assests/images/angular.png" alt="">
+          <img src="assests/images/figma.png" alt="">
+          <img src="assests/images/mui.png" alt="">
+          <img src="assests/images/tailwind.png" alt="">
+          <img src="assests/images/php.png" alt="">
+      </div>
+  </div>
+  </div>
+
+  <div class="footer">
+    <div class="top">
+      <a href="#top"><i class='bx bxs-up-arrow'></i></a>
+    </div>
+  </div>
+  <script>
+    // Get the footer element
+const footer = document.querySelector('.footer');
+
+// Listen for the scroll event
+window.addEventListener('scroll', function() {
+  // Check if the user has scrolled down past a certain point
+  if (window.scrollY > 20) {
+    // Add the class to make the footer visible
+    footer.classList.add('visible');
+  } else {
+    // Remove the class to hide the footer
+    footer.classList.remove('visible');
+  }
+});
+
+  </script>
 </body>
 </html>

@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 02, 2025 at 08:32 AM
+-- Generation Time: Mar 05, 2025 at 05:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone = "+05:30";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -39,8 +39,7 @@ CREATE TABLE `devices` (
 --
 
 INSERT INTO `devices` (`id`, `device_name`, `working_condition`, `time_added`) VALUES
-(1, 'Mouse', 'Good', '2025-03-02 06:24:31'),
-(2, 'Mouse', 'Good', '2025-03-02 06:25:04');
+(0, 'MOUSE', 'Good', '2025-03-05 04:47:23');
 
 -- --------------------------------------------------------
 
@@ -50,8 +49,7 @@ INSERT INTO `devices` (`id`, `device_name`, `working_condition`, `time_added`) V
 
 CREATE TABLE `lab_a_cpus` (
   `id` int(11) NOT NULL,
-  `model` varchar(100) NOT NULL,
-  `serial_number` varchar(100) NOT NULL
+  `cpu_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -62,7 +60,7 @@ CREATE TABLE `lab_a_cpus` (
 
 CREATE TABLE `lab_a_issues` (
   `id` int(11) NOT NULL,
-  `device_type` varchar(20),
+  `device_type` varchar(20) DEFAULT NULL,
   `description` text NOT NULL,
   `status` enum('Pending','Resolved') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -88,8 +86,7 @@ CREATE TABLE `lab_a_logs` (
 
 CREATE TABLE `lab_a_monitors` (
   `id` int(11) NOT NULL,
-  `model` varchar(100) NOT NULL,
-  `serial_number` varchar(100) NOT NULL
+  `monitor_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -116,7 +113,7 @@ CREATE TABLE `lab_a_systems` (
   `ups_id` int(11) NOT NULL,
   `monitor_id` int(11) NOT NULL,
   `internet` varchar(10) NOT NULL,
-  `issue` varchar(100) DEFAULT NULL,
+  `issue` varchar(255) NOT NULL,
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -128,8 +125,7 @@ CREATE TABLE `lab_a_systems` (
 
 CREATE TABLE `lab_a_upss` (
   `id` int(11) NOT NULL,
-  `model` varchar(100) NOT NULL,
-  `serial_number` varchar(100) NOT NULL
+  `ups_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -137,17 +133,11 @@ CREATE TABLE `lab_a_upss` (
 --
 
 --
--- Indexes for table `devices`
---
-ALTER TABLE `devices`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `lab_a_cpus`
 --
 ALTER TABLE `lab_a_cpus`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `serial_number` (`serial_number`);
+  ADD UNIQUE KEY `cpu_id` (`cpu_id`);
 
 --
 -- Indexes for table `lab_a_issues`
@@ -166,7 +156,7 @@ ALTER TABLE `lab_a_logs`
 --
 ALTER TABLE `lab_a_monitors`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `serial_number` (`serial_number`);
+  ADD UNIQUE KEY `monitor_id` (`monitor_id`);
 
 --
 -- Indexes for table `lab_a_stocks`
@@ -188,17 +178,11 @@ ALTER TABLE `lab_a_systems`
 --
 ALTER TABLE `lab_a_upss`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `serial_number` (`serial_number`);
+  ADD UNIQUE KEY `ups_id` (`ups_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `devices`
---
-ALTER TABLE `devices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `lab_a_cpus`

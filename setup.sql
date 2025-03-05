@@ -8,7 +8,7 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `rmail` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 -- Labs table to store lab information
 CREATE TABLE labs (
@@ -16,6 +16,15 @@ CREATE TABLE labs (
     lab_name VARCHAR(100) UNIQUE NOT NULL,
     database_name VARCHAR(100) UNIQUE NOT NULL
 );
+
+INSERT INTO labs(lab_name,database_name)
+VALUES('CS-01','lab_A');
+INSERT INTO labs(lab_name,database_name)
+VALUES('CS-02','lab_B');
+INSERT INTO labs(lab_name,database_name)
+VALUES('CAD','lab_C');
+INSERT INTO labs(lab_name,database_name)
+VALUES('MAT','lab_D');
 
 CREATE TABLE system_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,25 +45,25 @@ CREATE DATABASE lab_D;
 -- Devices Tables
 CREATE TABLE lab_A.lab_A_cpus (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    model VARCHAR(100) NOT NULL,
-    serial_number VARCHAR(100) NOT NULL UNIQUE
+    cpu_id VARCHAR(50) UNIQUE NOT NULL
 );
+
 CREATE TABLE lab_A.lab_A_upss (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    model VARCHAR(100) NOT NULL,
-    serial_number VARCHAR(100) NOT NULL UNIQUE
+    ups_id VARCHAR(50) UNIQUE NOT NULL
 );
+
 CREATE TABLE lab_A.lab_A_monitors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    model VARCHAR(100) NOT NULL,
-    serial_number VARCHAR(100) NOT NULL UNIQUE
+    monitor_id VARCHAR(50) UNIQUE NOT NULL
 );
+
 CREATE TABLE lab_A.devices (
   `id` int(11) NOT NULL,
   `device_name` varchar(255) NOT NULL,
   `working_condition` enum('Good','Needs Repair','Not Working') DEFAULT 'Good',
   `time_added` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 CREATE TABLE lab_B.lab_B_cpus LIKE lab_A.lab_A_cpus;
 CREATE TABLE lab_B.lab_B_upss LIKE lab_A.lab_A_upss;
@@ -80,13 +89,14 @@ CREATE TABLE lab_A.lab_A_systems (
     internet VARCHAR(10) NOT NULL,
     issue VARCHAR(100),
     description TEXT,
-    FOREIGN KEY (cpu_id) REFERENCES lab_A.lab_A_cpus(id) ON DELETE CASCADE,
-    FOREIGN KEY (ups_id) REFERENCES lab_A.lab_A_upss(id) ON DELETE CASCADE,
-    FOREIGN KEY (monitor_id) REFERENCES lab_A.lab_A_monitors(id) ON DELETE CASCADE
+    FOREIGN KEY (cpu_id) REFERENCES lab_A.lab_A_cpus(cpu_id) ON DELETE CASCADE,
+    FOREIGN KEY (ups_id) REFERENCES lab_A.lab_A_upss(ups_id) ON DELETE CASCADE,
+    FOREIGN KEY (monitor_id) REFERENCES lab_A.lab_A_monitors(monitor_id) ON DELETE CASCADE
 );
 CREATE TABLE lab_B.lab_B_systems LIKE lab_A.lab_A_systems;
 CREATE TABLE lab_C.lab_C_systems LIKE lab_A.lab_A_systems;
 CREATE TABLE lab_D.lab_D_systems LIKE lab_A.lab_A_systems;
+
 -- Lab Stocks Table
 CREATE TABLE lab_A.lab_A_stocks (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -100,6 +110,7 @@ CREATE TABLE lab_D.lab_D_stocks LIKE lab_A.lab_A_stocks;
 -- Lab Issues Table
 CREATE TABLE lab_A.lab_A_issues (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    device_type varchar(20),
     description TEXT NOT NULL,
     status ENUM('Pending', 'Resolved') DEFAULT 'Pending'
 );
