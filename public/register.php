@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $conn->prepare($insert_query);
                 $stmt->bind_param("sss", $username, $hashed_password, $email);
                 if ($stmt->execute()) {
-                    $success = "Registration successful! <a href='login.php'>Login here</a>";
+                    $success = "Registration successful! <a href='login.php' class='text-blue-500'>Login here</a>";
                 } else {
                     $error = "Registration failed!";
                 }
@@ -61,57 +61,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="../assets/style.css">
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .container { background: white; padding: 20px; width: 350px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); text-align: center; }
-        h2 { margin-bottom: 15px; }
-        .input-group { position: relative; width: 100%; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
-        .eye-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; }
-        button { width: 100%; padding: 10px; background: #007bff; border: none; color: white; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .message { color: red; margin-top: 10px; }
-        .success { color: green; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Create an Account</h2>
+
+        <?php if ($error): ?>
+            <p class="text-red-500 text-center"><?php echo $error; ?></p>
+        <?php endif; ?>
+
+        <?php if ($success): ?>
+            <p class="text-green-500 text-center"><?php echo $success; ?></p>
+        <?php endif; ?>
+
+        <form method="post" class="space-y-4">
+            <div>
+                <label class="block text-gray-700">Username</label>
+                <input type="text" name="username" required
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Email</label>
+                <input type="email" name="rmail" required
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div class="relative">
+                <label class="block text-gray-700">Password</label>
+                <input type="password" name="password" id="password" required
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePassword('password')">👁️</span>
+            </div>
+
+            <div class="relative">
+                <label class="block text-gray-700">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" required
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePassword('confirm_password')">👁️</span>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">
+                Register
+            </button>
+        </form>
+
+        <p class="text-center text-gray-600 mt-4">Already have an account? <a href="login.php" class="text-blue-500">Login here</a></p>
+        <p class="text-center text-gray-600 mt-2">Register via QR Code? <a href="qr_reg.php" class="text-blue-500">Click here</a></p>
+    </div>
+
     <script>
         function togglePassword(id) {
             var input = document.getElementById(id);
-            var icon = document.getElementById(id + "-icon");
             if (input.type === "password") {
                 input.type = "text";
-                icon.textContent = "👁️";
             } else {
                 input.type = "password";
-                icon.textContent = "👁️‍🗨️";
             }
         }
     </script>
-</head>
-<body>
-
-<div class="container">
-    <h2>Register</h2>
-    <?php if ($error) { echo "<p class='message'>$error</p>"; } ?>
-    <?php if ($success) { echo "<p class='success'>$success</p>"; } ?>
-    <form method="post" action="">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="rmail" placeholder="Email" required>
-
-        <div class="input-group">
-            <input type="password" name="password" id="password" placeholder="Password" required>
-            <span class="eye-icon" id="password-icon" onclick="togglePassword('password')">👁️‍🗨️</span>
-        </div>
-
-        <div class="input-group">
-            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
-            <span class="eye-icon" id="confirm_password-icon" onclick="togglePassword('confirm_password')">👁️‍🗨️</span>
-        </div>
-
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="login.php">Login here</a></p>
-</div>
 
 </body>
 </html>

@@ -232,6 +232,18 @@ $lab = $_GET['lab'];
             <span>System Logs</span>
         </a>
     </li>
+    <li class="action-item">
+        <a href="scan.php?lab=<?php echo $lab; ?>" class="action-link">
+            <i class='bx bx-desktop'></i>
+            <span>QR Scan</span>
+        </a>
+    </li>
+    <li class="action-item">
+        <a href="lab_location.php?lab=<?php echo $lab; ?>" class="action-link">
+            <i class='bx bx-map'></i>
+            <span>Lab Location</span>
+        </a>
+    </li>
     </ul>
 
     <!-- Back Button -->

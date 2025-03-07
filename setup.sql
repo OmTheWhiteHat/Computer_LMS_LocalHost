@@ -4,10 +4,11 @@ USE main_auth;
 
 -- Users table for authentication
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `rmail` varchar(255) DEFAULT NULL
+  `rmail` varchar(255) DEFAULT NULL,
+  `qr_code` VARCHAR(255) UNIQUE
 );
 
 -- Labs table to store lab information
