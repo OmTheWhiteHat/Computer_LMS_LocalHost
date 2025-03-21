@@ -243,7 +243,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['qr_data'])) {
 
     <br>
     <div class="link-container">
-        <a href="register.php">Create an account</a> | 
         <a href="forgot_password.php">Forgot password?</a>
     </div>
     <div class="link-container">

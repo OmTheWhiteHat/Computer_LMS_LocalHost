@@ -4,12 +4,47 @@ if (!isset($_SESSION['username']) || !isset($_GET['lab'])) {
     header("Location: ../public/login.php");
     exit();
 }
+
 include '../include/db.php';
 $lab = $_GET['lab'];
-$conn->select_db($lab); // ✅ Ensure the correct database is selected
+$conn->select_db($lab);
 
+// Ensure the lab locations table exists
+$conn->query("CREATE TABLE IF NOT EXISTS `{$lab}_locations` (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    lab_name VARCHAR(255) NOT NULL UNIQUE,
+    building VARCHAR(255) NOT NULL,
+    floor VARCHAR(50) NOT NULL,
+    room_number VARCHAR(50) NOT NULL
+)");
+
+
+// Fetch stock items
 $query = "SELECT * FROM `{$lab}_stocks`";
 $result = $conn->query($query);
+
+// Check if the query ran successfully
+if (!$result) {
+    die("Error fetching stock: " . $conn->error);
+}
+
+// Fetch total quantity
+$total_items = 0;
+$total_quantity = 0;
+$items_data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $items_data[] = $row;
+    $total_items++;
+    $total_quantity += $row['quantity'];
+}
+
+// Generate unique receipt number
+$receipt_number = strtoupper(substr($lab, 0, 3)) . "-" . date("YmdHis") . "-" . rand(100, 999);
+
+// Fetch current user
+$username = $_SESSION['username'];
+
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +64,7 @@ $result = $conn->query($query);
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
         table {
             width: 100%;
@@ -43,52 +79,58 @@ $result = $conn->query($query);
         th {
             background-color: #f4f4f4;
         }
-        .print-button {
+        .print-button, .primary-button {
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #28a745;
             color: white;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+        }
+        .print-button {
+            background-color: #28a745;
         }
         .print-button:hover {
             background-color: #218838;
         }
-        .primary-button
-        {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color:rgb(238, 68, 17);
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+        .primary-button {
+            background-color: rgb(238, 68, 17);
         }
-        .primary-button:hover
-        {
+        .primary-button:hover {
             background-color: rgb(195, 45, 0);
         }
-        .primary-button a
-        {
+        .primary-button a {
             text-decoration: none;
-            color : #fff;
+            color: #fff;
+        }
+        .receipt-header {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .summary {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="receipt-container" id="receipt">
         <h2>Lab Management System - Receipt</h2>
-        <p><strong>Lab:</strong> <?php echo htmlspecialchars($lab); ?></p>
+        <p class="receipt-header">Lab: <?php echo htmlspecialchars($lab); ?></p>
+        <p><strong>Issued By:</strong> <?php echo htmlspecialchars($username); ?></p>
+        <p><strong>Date:</strong> <?php echo date("d-m-Y H:i:s"); ?></p>
+        <p><strong>Receipt No:</strong> <?php echo $receipt_number; ?></p>
+        <hr>
+
         <table>
             <tr>
                 <th>ID</th>
                 <th>Item Name</th>
                 <th>Quantity</th>
             </tr>
-            <?php while ($row = $result->fetch_assoc()) { ?>
+            <?php foreach ($items_data as $row) { ?>
             <tr>
                 <td><?php echo $row['id']; ?></td>
                 <td><?php echo htmlspecialchars($row['item_name']); ?></td>
@@ -96,19 +138,18 @@ $result = $conn->query($query);
             </tr>
             <?php } ?>
         </table>
+
+        <p class="summary">
+            Total Items: <?php echo $total_items; ?> | Total Quantity: <?php echo $total_quantity; ?>
+        </p>
+
+        <hr>
+        <p><strong>Contact:</strong> +91-9876543210 | Email: clmsbest@gmail.com</p>
     </div>
+
     <button class="print-button" onclick="window.print();">Print Receipt</button>
-    <button class="primary-button"><a href="lab_panel.php?lab=<?php echo $lab; ?>" class="back-btn">Back to Lab Panel</a></button>
-    <!-- <script>
-        function printReceipt() {
-            let printContent = document.getElementById("receipt").innerHTML;
-            window.print();
-            button.className('print-button').style.display === "None";
-            document.body.innerHTML = printContent;
-            
-            location.reload();
-            button.className('print-button').style.display === "Block";
-        }
-    </script> -->
+    <button class="primary-button">
+        <a href="lab_panel.php?lab=<?php echo $lab; ?>" class="back-btn">Back to Lab Panel</a>
+    </button>
 </body>
 </html>

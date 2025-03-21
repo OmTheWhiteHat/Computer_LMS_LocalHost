@@ -17,9 +17,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conn->query($query);
     } elseif (isset($_POST['resolve_issue'])) {
         $issue_id = intval($_POST['issue_id']);
-        $query = "UPDATE `{$lab}_issues` SET status='Resolved' WHERE id=$issue_id";
-        $conn->query($query);
+    
+        // Fetch the device type for the resolved issue
+        $query = "SELECT device_type FROM `{$lab}_issues` WHERE id=$issue_id";
+        $result = $conn->query($query);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $device_type = $row['device_type'];
+    
+            // Update the issue status to 'Resolved'
+            $update_issue_query = "UPDATE `{$lab}_issues` SET status='Resolved' WHERE id=$issue_id";
+            if ($conn->query($update_issue_query)) {
+    
+                // Reduce stock quantity by 1, but only if stock is available
+                $update_stock_query = "UPDATE `{$lab}_stocks` SET quantity = GREATEST(quantity + 1, 0) WHERE item_name = ?";
+                $stmt = $conn->prepare($update_stock_query);
+                $stmt->bind_param("s", $device_type);
+                $stmt->execute();
+            }
+        }
     }
+    
 }
 
 // ✅ Fetch Issues
