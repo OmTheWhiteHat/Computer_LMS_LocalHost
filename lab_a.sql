@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 05:56 AM
+-- Generation Time: Apr 02, 2025 at 06:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+05:30";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -39,7 +39,7 @@ CREATE TABLE `devices` (
 --
 
 INSERT INTO `devices` (`id`, `device_name`, `working_condition`, `time_added`) VALUES
-(0, 'MOUSE', 'Good', '2025-03-05 04:47:23');
+(1, 'KEYBOARD', 'Needs Repair', '2025-03-12 04:16:16');
 
 -- --------------------------------------------------------
 
@@ -51,6 +51,13 @@ CREATE TABLE `lab_a_cpus` (
   `id` int(11) NOT NULL,
   `cpu_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_a_cpus`
+--
+
+INSERT INTO `lab_a_cpus` (`id`, `cpu_id`) VALUES
+(1, 'BEST-01');
 
 -- --------------------------------------------------------
 
@@ -64,6 +71,35 @@ CREATE TABLE `lab_a_issues` (
   `description` text NOT NULL,
   `status` enum('Pending','Resolved') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_a_issues`
+--
+
+INSERT INTO `lab_a_issues` (`id`, `device_type`, `description`, `status`) VALUES
+(1, 'Projector', 'Projector not working', 'Resolved'),
+(2, 'Keyboard', 'KEYBOARD NOT WORKING', 'Resolved');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lab_a_locations`
+--
+
+CREATE TABLE `lab_a_locations` (
+  `id` int(11) NOT NULL,
+  `lab_name` varchar(255) NOT NULL,
+  `building` varchar(255) NOT NULL,
+  `floor` varchar(50) NOT NULL,
+  `room_number` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_a_locations`
+--
+
+INSERT INTO `lab_a_locations` (`id`, `lab_name`, `building`, `floor`, `room_number`) VALUES
+(1, 'CS-01', 'academic block', '1st floor', '100');
 
 -- --------------------------------------------------------
 
@@ -89,6 +125,25 @@ CREATE TABLE `lab_a_monitors` (
   `monitor_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `lab_a_monitors`
+--
+
+INSERT INTO `lab_a_monitors` (`id`, `monitor_id`) VALUES
+(1, 'BEST-01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lab_a_qr_scans`
+--
+
+CREATE TABLE `lab_a_qr_scans` (
+  `id` int(11) NOT NULL,
+  `system_id` int(11) NOT NULL,
+  `scan_time` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -100,6 +155,14 @@ CREATE TABLE `lab_a_stocks` (
   `item_name` varchar(100) NOT NULL,
   `quantity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `lab_a_stocks`
+--
+
+INSERT INTO `lab_a_stocks` (`id`, `item_name`, `quantity`) VALUES
+(1, 'Keyboard', 10),
+(2, 'Projector', 12);
 
 -- --------------------------------------------------------
 
@@ -117,6 +180,13 @@ CREATE TABLE `lab_a_systems` (
   `description` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `lab_a_systems`
+--
+
+INSERT INTO `lab_a_systems` (`id`, `cpu_id`, `ups_id`, `monitor_id`, `internet`, `issue`, `description`) VALUES
+(0, 1, 1, 1, 'Yes', 'KEYBOARD', 'KEYBOARD NOT WORKING');
+
 -- --------------------------------------------------------
 
 --
@@ -129,8 +199,21 @@ CREATE TABLE `lab_a_upss` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `lab_a_upss`
+--
+
+INSERT INTO `lab_a_upss` (`id`, `ups_id`) VALUES
+(1, 'BEST-01');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `devices`
+--
+ALTER TABLE `devices`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `lab_a_cpus`
@@ -146,6 +229,12 @@ ALTER TABLE `lab_a_issues`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `lab_a_locations`
+--
+ALTER TABLE `lab_a_locations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `lab_a_logs`
 --
 ALTER TABLE `lab_a_logs`
@@ -157,6 +246,13 @@ ALTER TABLE `lab_a_logs`
 ALTER TABLE `lab_a_monitors`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `monitor_id` (`monitor_id`);
+
+--
+-- Indexes for table `lab_a_qr_scans`
+--
+ALTER TABLE `lab_a_qr_scans`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `system_id` (`system_id`);
 
 --
 -- Indexes for table `lab_a_stocks`
@@ -185,16 +281,28 @@ ALTER TABLE `lab_a_upss`
 --
 
 --
+-- AUTO_INCREMENT for table `devices`
+--
+ALTER TABLE `devices`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `lab_a_cpus`
 --
 ALTER TABLE `lab_a_cpus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `lab_a_issues`
 --
 ALTER TABLE `lab_a_issues`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `lab_a_locations`
+--
+ALTER TABLE `lab_a_locations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `lab_a_logs`
@@ -206,29 +314,35 @@ ALTER TABLE `lab_a_logs`
 -- AUTO_INCREMENT for table `lab_a_monitors`
 --
 ALTER TABLE `lab_a_monitors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `lab_a_qr_scans`
+--
+ALTER TABLE `lab_a_qr_scans`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `lab_a_stocks`
 --
 ALTER TABLE `lab_a_stocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `lab_a_systems`
---
-ALTER TABLE `lab_a_systems`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `lab_a_upss`
 --
 ALTER TABLE `lab_a_upss`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `lab_a_qr_scans`
+--
+ALTER TABLE `lab_a_qr_scans`
+  ADD CONSTRAINT `lab_a_qr_scans_ibfk_1` FOREIGN KEY (`system_id`) REFERENCES `lab_a_systems` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `lab_a_systems`
