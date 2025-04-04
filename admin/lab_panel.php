@@ -30,8 +30,6 @@ $lab = $_GET['lab'];
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
         }
 
         /* Container for the page */
@@ -44,6 +42,7 @@ $lab = $_GET['lab'];
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
             box-sizing: border-box;
+            margin: 20px;
         }
 
         h2 {
@@ -66,7 +65,8 @@ $lab = $_GET['lab'];
         /* List of actions */
         ul.action-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
+
             gap: 20px;
             padding: 0;
             list-style: none;
@@ -90,24 +90,31 @@ $lab = $_GET['lab'];
         }
 
         ul.action-list .action-link {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            font-size: 18px;
-            gap: 10px;  /* Adjust gap between icon and text */
-        }
+    display: flex;
+    flex-direction: column;  /* Stack icon and text vertically */
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 18px;
+    gap: 10px;  /* Adjust gap between icon and text */
+}
 
-        ul.action-list .action-item i {
-            font-size: 30px;
-            color: #fff;
-            background-color: #007bff;
-            border-radius: 50%;
-            padding: 20px;
-            transition: background-color 0.3s ease;
-        }
+
+ul.action-list .action-item i {
+    font-size: 30px;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 50%;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;  /* Ensures a circular icon */
+    height: 60px;
+}
+
 
         ul.action-list .action-item:nth-child(1) i {
             background-color: #007bff; /* Blue */
@@ -185,6 +192,11 @@ $lab = $_GET['lab'];
                 padding: 10px 20px;
             }
         }
+        @media (min-width: 1200px) {
+            ul.action-list {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
     </style>
 </head>
 
