@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 05:57 AM
+-- Generation Time: Apr 04, 2025 at 08:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -62,7 +62,30 @@ CREATE TABLE `system_logs` (
 --
 
 INSERT INTO `system_logs` (`id`, `username`, `action`, `ip_address`, `timestamp`) VALUES
-(1, 'admin', 'Login', '::1', '2025-03-05 05:43:57');
+(1, 'admin', 'QR Login', '::1', '2025-03-08 10:16:00'),
+(2, 'admin', 'QR Login', '::1', '2025-03-08 10:16:30'),
+(3, 'admin', 'Login', '::1', '2025-03-08 10:16:38'),
+(4, 'admin', 'Login', '::1', '2025-03-08 10:16:44'),
+(5, 'admin', 'QR Login', '::1', '2025-03-08 10:16:50'),
+(6, 'admin', 'QR Login', '::1', '2025-03-08 10:19:38'),
+(7, 'admin', 'Login', '::1', '2025-03-08 10:21:50'),
+(8, 'admin', 'Login', '::1', '2025-03-08 10:22:25'),
+(9, 'debu', 'Login', '::1', '2025-03-08 10:23:13'),
+(10, 'debu', 'Login', '::1', '2025-03-08 10:23:31'),
+(11, 'sourav', 'QR Login', '::1', '2025-03-08 10:29:01'),
+(12, 'sourav', 'Login', '::1', '2025-03-08 10:29:15'),
+(13, 'sourav', 'Login', '::1', '2025-03-08 10:30:49'),
+(14, 'sourav', 'QR Login', '::1', '2025-03-08 10:30:55'),
+(15, 'admin', 'Login', '::1', '2025-03-08 10:32:03'),
+(16, 'debu', 'QR Login', '::1', '2025-03-08 11:20:54'),
+(17, 'admin', 'QR Login', '::1', '2025-03-19 05:03:43'),
+(18, 'admin', 'Login', '::1', '2025-03-21 06:14:57'),
+(19, 'admin', 'Login', '::1', '2025-04-02 05:56:36'),
+(20, 'admin', 'Login', '::1', '2025-04-02 06:50:59'),
+(21, 'admin', 'Login', '::1', '2025-04-02 12:57:57'),
+(22, 'admin', 'Login', '::1', '2025-04-02 13:00:45'),
+(23, 'admin', 'Login', '::1', '2025-04-02 13:00:59'),
+(24, 'admin', 'Login', '::1', '2025-04-04 07:19:26');
 
 -- --------------------------------------------------------
 
@@ -74,15 +97,18 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `rmail` varchar(255) DEFAULT NULL
+  `rmail` varchar(255) DEFAULT NULL,
+  `qr_code` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password_hash`, `rmail`) VALUES
-(0, 'admin', '$2y$10$6oNmHZHapbybJOi9ekTg7.tV9BcaAiYz2aopGp/gHJmPN9YsaLPDq', 'admin@gmail.com');
+INSERT INTO `users` (`id`, `username`, `password_hash`, `rmail`, `qr_code`) VALUES
+(1, 'admin', '$2y$10$o7010FYzGXbwiRFfIFRKfuFN0giH8evDLW.bdoMng4H40TIRILhAy', 'admin@gmail.com', 'user_admin_67cc0abe4d5c8'),
+(2, 'debu', '$2y$10$UXiSlX.P7PJls7BonG06fewvgU2pgSkQjH.IbJGqQ/6DWFv.BVZjO', 'debu@chuta.com', 'user_debu_67cc0c8de5039'),
+(3, 'sourav', '$2y$10$YYEIRq3gVKvACfiGTjI.MuVoZ0zA7wStKc7mFajID2oAgpDCHtNOW', 'sourav@gmail.com', 'user_sourav_67cc0dd5dd136');
 
 --
 -- Indexes for dumped tables
@@ -94,13 +120,21 @@ INSERT INTO `users` (`id`, `username`, `password_hash`, `rmail`) VALUES
 ALTER TABLE `labs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `lab_name` (`lab_name`),
-  ADD UNIQUE KEY `database_name` (`database_name`);
+  ADD UNIQUE KEY `database_name` (`database_name`),
+  ADD UNIQUE KEY `unique_lab_name` (`lab_name`);
 
 --
 -- Indexes for table `system_logs`
 --
 ALTER TABLE `system_logs`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `qr_code` (`qr_code`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -116,7 +150,13 @@ ALTER TABLE `labs`
 -- AUTO_INCREMENT for table `system_logs`
 --
 ALTER TABLE `system_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
