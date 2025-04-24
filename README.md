@@ -44,7 +44,6 @@
 |----------------|--------------------------------------|
 | 🐘 PHP          | Backend scripting                    |
 | 🐬 MySQL        | Relational database management       |
-| 🧠 React        | Frontend authentication module       |
 | 📄 HTML/CSS     | User interface design                |
 | 🎨 Bootstrap    | Responsive UI components             |
 | 📷 QR.js / JS   | QR code scanning and handling        |
