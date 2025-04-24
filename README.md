@@ -2,8 +2,6 @@
 
 **CLMS - An Advanced Computer Lab Management System**
 
-![CLMS Banner](https://via.placeholder.com/1200x300?text=Computer+Lab+Management+System)
-
 ---
 
 ## 🚀 Overview
